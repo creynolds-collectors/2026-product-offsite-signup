@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 Collectors Product Offsite - Team Signups</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .container {
+      margin: 0 75px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    }
+    h1 {
+      text-align: center;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 0.25rem;
+      font-size: 2rem;
+      letter-spacing: -0.5px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #64748b;
+      margin-bottom: 2.5rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    /* Teams grid */
+    .teams-grid { display: flex; gap: 1.25rem; }
+    .team-column { flex: 1; }
+    .team-column {
+      display: flex;
+      flex-direction: column;
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 1rem;
+      border: 1px solid #e2e8f0;
+      min-width: 0;
+    }
+
+    /* Team header */
+    .team-header {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      border: none;
+      padding: 0.875rem 1rem;
+      font-weight: 600;
+      font-size: 1rem;
+      color: white;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+    .team-pokemon {
+      height: 40px;
+      image-rendering: pixelated;
+    }
+    .team-tagline {
+      font-size: 0.85rem;
+      color: #64748b;
+      text-align: center;
+      padding: 0.5rem 0.5rem 0;
+      font-style: italic;
+    }
+
+    /* Input box */
+    .signup-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background: white;
+      margin: 0.75rem 0;
+      transition: all 0.2s ease;
+    }
+    .signup-input:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    .signup-input::placeholder { color: #94a3b8; }
+
+    /* Name list */
+    .name-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .name-row {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background: white;
+      text-align: center;
+      font-weight: 500;
+      color: #334155;
+      transition: all 0.2s ease;
+    }
+    .name-row.editable {
+      cursor: pointer;
+      background: #02ba8d;
+      border-color: #02a57d;
+      color: white;
+    }
+    .name-row.editable:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(2, 186, 141, 0.4);
+    }
+    .edit-icon { font-size: 0.75rem; color: #b45309; margin-left: 0.5rem; }
+
+    /* Responsive */
+    @media (max-width: 1000px) {
+      .container { margin: 0 50px; }
+    }
+    @media (max-width: 700px) {
+      .teams-grid { flex-wrap: wrap; }
+      .team-column { flex: 1 1 45%; }
+      .container { padding: 1.5rem; margin: 0 1rem; }
+      h1 { font-size: 1.5rem; }
+    }
+    @media (max-width: 480px) {
+      .team-column { flex: 1 1 100%; }
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal.hidden { display: none; }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      min-width: 340px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+    .modal-content h3 {
+      margin-bottom: 1.25rem;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: #1e293b;
+    }
+    .modal-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      transition: all 0.2s ease;
+    }
+    .modal-input:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    .modal-buttons { display: flex; gap: 0.75rem; justify-content: flex-end; }
+    .btn {
+      padding: 0.625rem 1.25rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    .btn-save { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
+    .btn-save:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4); }
+    .btn-cancel { background: #f1f5f9; color: #475569; }
+    .btn-cancel:hover { background: #e2e8f0; }
+    .btn-delete { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; margin-right: auto; }
+    .btn-delete:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4); }
+
+    /* Confirm Modal */
+    .confirm-message { font-size: 1rem; color: #475569; margin-bottom: 1.5rem; line-height: 1.5; }
+
+    /* Confetti */
+    .confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; }
+    .confetti { position: absolute; width: 10px; height: 10px; opacity: 0; animation: confetti-fall 3s ease-out forwards; }
+    @keyframes confetti-fall {
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* GIF Popup */
+    .gif-popup {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      animation: fade-in 0.2s ease-out;
+      cursor: pointer;
+    }
+    .gif-popup.hidden { display: none; }
+    .gif-popup img {
+      max-width: 90%;
+      max-height: 80%;
+      border-radius: 16px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>2026 Collectors Product Offsite</h1>
+    <p class="subtitle">Team Signups</p>
+    <div class="teams-grid" id="teams-grid"></div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="edit-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Edit your signup</h3>
+      <input type="text" id="edit-name-input" class="modal-input">
+      <div class="modal-buttons">
+        <button class="btn btn-delete" onclick="deleteFromModal()">Delete</button>
+        <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-save" onclick="saveFromModal()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div id="confirm-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3 id="confirm-title">Confirm</h3>
+      <img id="confirm-gif" src="" alt="" style="display:none; max-width:100%; border-radius:8px; margin-bottom:1rem; margin-left:auto; margin-right:auto;">
+      <p class="confirm-message" id="confirm-message"></p>
+      <div class="modal-buttons">
+        <button class="btn btn-cancel" onclick="closeConfirmModal(false)">Cancel</button>
+        <button class="btn btn-save" onclick="closeConfirmModal(true)">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alert Modal -->
+  <div id="alert-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3 id="alert-title">Notice</h3>
+      <p class="confirm-message" id="alert-message"></p>
+      <div class="modal-buttons">
+        <button class="btn btn-save" onclick="closeAlertModal()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti Container -->
+  <div id="confetti-container" class="confetti-container"></div>
+
+  <!-- GIF Popup -->
+  <div id="gif-popup" class="gif-popup hidden" onclick="closeGifPopup()">
+    <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXVmOHA2bDVoeDE5OHliY24ydjJ1Y3BwdXpobGtxcG91cXZ5OXNpeSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/kaBU6pgv0OsPHz2yxy/giphy.gif" alt="Goodbye!">
+  </div>
+
+  <script>
+    // Supabase credentials
+    const SUPABASE_URL = 'https://tvuohothipklgwzcvmva.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2dW9ob3RoaXBrbGd3emN2bXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5MjAyNzEsImV4cCI6MjA4NjQ5NjI3MX0.ZWJPGd3Yt-Opv3Oaut3xvUZNhGrQ3P8FrQuhN-wCb6I';
+
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const teams = ['Venusaur', 'Charizard', 'Blastoise', 'Snorlax', 'Zapdos'];
+    const teamGifs = {
+      'Venusaur': 'https://img.pokemondb.net/sprites/black-white/anim/normal/venusaur.gif',
+      'Charizard': 'https://img.pokemondb.net/sprites/black-white/anim/normal/charizard.gif',
+      'Blastoise': 'https://img.pokemondb.net/sprites/black-white/anim/normal/blastoise.gif',
+      'Snorlax': 'https://img.pokemondb.net/sprites/black-white/anim/normal/snorlax.gif',
+      'Zapdos': 'https://img.pokemondb.net/sprites/black-white/anim/normal/zapdos.gif'
+    };
+    const teamTaglines = {
+      'Venusaur': 'Insert idea here',
+      'Charizard': 'Insert idea here',
+      'Blastoise': 'Insert idea here',
+      'Snorlax': 'Insert idea here',
+      'Zapdos': 'Insert idea here'
+    };
+    const teamsGrid = document.getElementById('teams-grid');
+
+    // Get or create a unique browser ID
+    function getBrowserId() {
+      let id = localStorage.getItem('signup_browser_id');
+      if (!id) {
+        id = crypto.randomUUID();
+        localStorage.setItem('signup_browser_id', id);
+      }
+      return id;
+    }
+    const browserId = getBrowserId();
+
+    // ========== STYLED MODALS ==========
+    let confirmResolve = null;
+
+    function showAlert(title, message) {
+      document.getElementById('alert-title').textContent = title;
+      document.getElementById('alert-message').textContent = message;
+      document.getElementById('alert-modal').classList.remove('hidden');
+    }
+
+    function closeAlertModal() {
+      document.getElementById('alert-modal').classList.add('hidden');
+    }
+
+    function showConfirm(title, message, gifUrl = null) {
+      return new Promise(resolve => {
+        confirmResolve = resolve;
+        document.getElementById('confirm-title').textContent = title;
+        document.getElementById('confirm-message').textContent = message;
+        const gifEl = document.getElementById('confirm-gif');
+        if (gifUrl) {
+          gifEl.src = gifUrl;
+          gifEl.style.display = 'block';
+          gifEl.style.marginLeft = 'auto';
+          gifEl.style.marginRight = 'auto';
+        } else {
+          gifEl.style.display = 'none';
+        }
+        document.getElementById('confirm-modal').classList.remove('hidden');
+      });
+    }
+
+    function closeConfirmModal(result) {
+      document.getElementById('confirm-modal').classList.add('hidden');
+      if (confirmResolve) {
+        confirmResolve(result);
+        confirmResolve = null;
+      }
+    }
+
+    // ========== GIF POPUP ==========
+    function showGifPopup() {
+      document.getElementById('gif-popup').classList.remove('hidden');
+      // Auto-close after 5 seconds
+      setTimeout(closeGifPopup, 5000);
+    }
+
+    function closeGifPopup() {
+      document.getElementById('gif-popup').classList.add('hidden');
+    }
+
+    // ========== CONFETTI ==========
+    function launchConfetti() {
+      const container = document.getElementById('confetti-container');
+      const colors = ['#02ba8d', '#6366f1', '#8b5cf6', '#f59e0b', '#ef4444', '#10b981', '#3b82f6'];
+
+      for (let i = 0; i < 150; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+
+        // Random shapes
+        if (Math.random() > 0.5) {
+          confetti.style.borderRadius = '50%';
+        } else {
+          confetti.style.width = '8px';
+          confetti.style.height = '16px';
+        }
+
+        container.appendChild(confetti);
+      }
+
+      // Clean up after animation
+      setTimeout(() => {
+        container.innerHTML = '';
+      }, 4000);
+    }
+
+    // Initial UI build (only runs once)
+    function initUI() {
+      teamsGrid.innerHTML = teams.map(team => `
+        <div class="team-column" data-team="${team}">
+          <div class="team-header">
+            <span>${team}</span>
+            <img src="${teamGifs[team]}" alt="" class="team-pokemon">
+          </div>
+          <div class="team-tagline">${teamTaglines[team]}</div>
+          <input type="text" class="signup-input" placeholder="Enter your name..." onkeypress="handleKeypress(event, '${team}')">
+          <div class="name-list"></div>
+        </div>
+      `).join('');
+    }
+
+    // Update only the name lists (preserves input fields)
+    function updateNameLists(signups) {
+      teams.forEach(team => {
+        const column = document.querySelector(`[data-team="${team}"]`);
+        const nameList = column.querySelector('.name-list');
+        const teamSignups = signups.filter(s => s.team === team);
+        nameList.innerHTML = teamSignups.map(s => {
+          const isOwner = s.browser_id === browserId;
+          if (isOwner) {
+            return `<div class="name-row editable" onclick="editName('${s.id}', '${s.name}', '${team}')">${s.name}</div>`;
+          }
+          return `<div class="name-row">${s.name}</div>`;
+        }).join('');
+      });
+    }
+
+    // Modal state
+    let editingId = null;
+
+    // Edit existing name
+    function editName(id, currentName, team) {
+      editingId = id;
+      document.getElementById('edit-name-input').value = currentName;
+      document.getElementById('edit-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('edit-modal').classList.add('hidden');
+      editingId = null;
+    }
+
+    function saveFromModal() {
+      const newName = document.getElementById('edit-name-input').value.trim();
+      if (newName) {
+        updateName(editingId, newName);
+      }
+      closeModal();
+    }
+
+    function deleteFromModal() {
+      deleteName(editingId);
+      closeModal();
+    }
+
+    // Delete signup
+    async function deleteName(id) {
+      const { error } = await db.from('signups').delete().eq('id', id).eq('browser_id', browserId);
+      if (error) { showAlert('Error', error.message); return; }
+      showGifPopup();
+      loadSignups();
+    }
+
+    // Update name in database
+    async function updateName(id, name) {
+      const { error } = await db.from('signups').update({ name }).eq('id', id).eq('browser_id', browserId);
+      if (error) { showAlert('Error', error.message); return; }
+      loadSignups();
+    }
+
+    // Handle enter key
+    function handleKeypress(event, team) {
+      if (event.key === 'Enter') {
+        saveName(event.target, team);
+      }
+    }
+
+    // Save name to database
+    async function saveName(input, team) {
+      const name = input.value.trim();
+      if (!name) return;
+
+      input.disabled = true;
+
+      // Check if user is already signed up for a team
+      const { data: existing } = await db.from('signups').select('id, team, name').eq('browser_id', browserId);
+      if (existing && existing.length > 0) {
+        const oldTeam = existing[0].team;
+        if (oldTeam === team) {
+          showAlert('Already Signed Up', `You're already signed up for ${team}! Click your name to edit it.`);
+          input.disabled = false;
+          return;
+        }
+        // Ask if they want to switch teams
+        const switchTeam = await showConfirm('Switch Teams?', `You're already signed up for ${oldTeam}. Would you like to switch to ${team}?`, 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExc2o0NmRkdmFhNDFkb2UwMW1seDdldG80a3c1Ynh4ZW4xaWpxeWN6MSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l6XwjmRjXbgdB7eK2e/giphy.gif');
+        if (!switchTeam) {
+          input.disabled = false;
+          return;
+        }
+        // Delete old signup
+        const { error: deleteError } = await db.from('signups').delete().eq('id', existing[0].id).eq('browser_id', browserId);
+        if (deleteError) {
+          showAlert('Error', 'Error switching teams: ' + deleteError.message);
+          input.disabled = false;
+          return;
+        }
+      }
+
+      const { error } = await db.from('signups').insert([{ name, team, browser_id: browserId }]);
+      input.disabled = false;
+
+      if (error) { showAlert('Error', error.message); return; }
+
+      // Success! Launch confetti!
+      launchConfetti();
+      input.value = '';
+      loadSignups();
+    }
+
+    // Load signups
+    async function loadSignups() {
+      const { data, error } = await db.from('signups').select('*').order('created_at');
+      if (error) { console.error(error); return; }
+      updateNameLists(data || []);
+    }
+
+    // Real-time updates
+    db.channel('signups')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'signups' }, () => loadSignups())
+      .subscribe((status) => {
+        console.log('Realtime status:', status);
+      });
+
+    // Fallback: poll every 3 seconds if realtime isn't working
+    setInterval(loadSignups, 3000);
+
+    // Initialize UI once, then load data
+    initUI();
+    loadSignups();
+  </script>
+</body>
+</html>
+
