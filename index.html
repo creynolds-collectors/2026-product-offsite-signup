@@ -22,11 +22,16 @@
       padding: 2.5rem;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
     }
+    .title-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      margin-bottom: 0.25rem;
+    }
     h1 {
-      text-align: center;
       font-weight: 700;
       color: #1a1a2e;
-      margin-bottom: 0.25rem;
       font-size: 2rem;
       letter-spacing: -0.5px;
     }
@@ -36,6 +41,68 @@
       margin-bottom: 2.5rem;
       font-size: 1.1rem;
       font-weight: 500;
+    }
+
+    /* Party Mode Toggle */
+    .mode-toggle {
+      position: absolute;
+      right: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #cbd5e1;
+      border-radius: 24px;
+      transition: 0.3s;
+    }
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    .toggle-switch input:checked + .toggle-slider {
+      background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+    }
+    .toggle-switch input:checked + .toggle-slider:before {
+      transform: translateX(20px);
+    }
+
+    /* Party Mode Background */
+    body.party-mode {
+      background: url('https://i.pinimg.com/originals/fb/77/83/fb7783e9337a2371097e48e01befb687.gif') center center;
+      background-size: cover;
+    }
+
+    /* Nyan Cat */
+    .nyan-cat {
+      position: fixed;
+      height: 80px;
+      z-index: 9998;
+      pointer-events: none;
+      display: none;
+      left: -150px;
     }
 
     /* Teams grid */
@@ -232,8 +299,20 @@
   </style>
 </head>
 <body>
+  <!-- Nyan Cat -->
+  <img src="https://i.pinimg.com/originals/ed/35/f8/ed35f861be81be2548e514085fb19385.gif" alt="" class="nyan-cat">
+
   <div class="container">
-    <h1>2026 Collectors Product Offsite</h1>
+    <div class="title-row">
+      <h1>2026 Collectors Product Offsite</h1>
+      <div class="mode-toggle">
+        <span>Party</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="party-toggle" onchange="togglePartyMode()">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
     <p class="subtitle">Team Signups</p>
     <div class="teams-grid" id="teams-grid"></div>
   </div>
@@ -328,6 +407,50 @@
 
     function closeAlertModal() {
       document.getElementById('alert-modal').classList.add('hidden');
+    }
+
+    // ========== PARTY MODE ==========
+    let nyanInterval = null;
+
+    function togglePartyMode() {
+      const isParty = document.getElementById('party-toggle').checked;
+      document.body.classList.toggle('party-mode', isParty);
+
+      const nyanCat = document.querySelector('.nyan-cat');
+      if (isParty) {
+        nyanCat.style.display = 'block';
+        startNyanFlight();
+      } else {
+        nyanCat.style.display = 'none';
+        if (nyanInterval) {
+          clearInterval(nyanInterval);
+          nyanInterval = null;
+        }
+      }
+    }
+
+    function startNyanFlight() {
+      const nyanCat = document.querySelector('.nyan-cat');
+
+      function flyAcross() {
+        const startY = Math.random() * 60 + 10; // 10-70% from top
+        const endY = Math.random() * 60 + 10;
+        const duration = Math.random() * 2000 + 3000; // 3-5 seconds
+
+        nyanCat.style.transition = 'none';
+        nyanCat.style.left = '-150px';
+        nyanCat.style.top = startY + '%';
+
+        // Force reflow
+        nyanCat.offsetHeight;
+
+        nyanCat.style.transition = `left ${duration}ms linear, top ${duration}ms ease-in-out`;
+        nyanCat.style.left = '110%';
+        nyanCat.style.top = endY + '%';
+      }
+
+      flyAcross();
+      nyanInterval = setInterval(flyAcross, 4000);
     }
 
     function showConfirm(title, message, gifUrl = null) {
