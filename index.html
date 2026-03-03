@@ -634,7 +634,12 @@
       },
       'Dealers Choice': {
         title: 'Dealers Choice',
-        body: "Bruh, you dont like my ideas? That's cool. Do your own thing."
+        body: "Bruh, you dont like my ideas? That's cool. Do your own thing.",
+        footer2Title: "Some examples:",
+        footer2Bullets: [
+          'Existing PRD to prototype mock',
+          { text: 'Market research.', sub: ['... Compare how PSA differentiates from the competitors.', '... Cost of submissions, SLA, customer sentiment, brand image, etc..'] }
+        ]
       }
     };
     const teamAnimations = {
@@ -814,7 +819,11 @@
                   : `<li>${b.text}<ul>${b.sub.map(s => `<li>${s}</li>`).join('')}</ul></li>`
               ).join('')}</ul>` : ''}
               ${teamTooltips[team].hardMode ? `<div class="tooltip-hard-mode">Hard mode: ${teamTooltips[team].hardMode}</div>` : ''}
-              ${teamTooltips[team].footer2Title ? `<div class="tooltip-section-title">${teamTooltips[team].footer2Title}</div><ul>${teamTooltips[team].footer2Bullets.map(b => `<li>${b}</li>`).join('')}</ul>` : ''}
+              ${teamTooltips[team].footer2Title ? `<div class="tooltip-section-title">${teamTooltips[team].footer2Title}</div><ul>${teamTooltips[team].footer2Bullets.map(b =>
+                typeof b === 'string'
+                  ? `<li>${b}</li>`
+                  : `<li>${b.text}<ul>${b.sub.map(s => `<li>${s}</li>`).join('')}</ul></li>`
+              ).join('')}</ul>` : ''}
               ${teamTooltips[team].footer ? `<div class="tooltip-footer">${teamTooltips[team].footer}</div>` : ''}
             </div>` : ''}
           </div>
