@@ -133,17 +133,247 @@
       align-items: center;
       justify-content: center;
       gap: 0.75rem;
+      position: relative;
+      cursor: default;
+      perspective: 1000px;
     }
-    .team-pokemon {
-      height: 40px;
-      image-rendering: pixelated;
+    .team-header.color-green { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+    .team-header.color-pink { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); }
+    .team-header.color-orange { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+    .team-header.color-rainbow {
+      background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #8b5cf6, #ec4899);
+      background-size: 200% 100%;
+      animation: rainbow-shift 3s linear infinite;
     }
-    .team-tagline {
+    @keyframes rainbow-shift {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+    .team-header:hover .tooltip {
+      display: block;
+    }
+
+    /* Text roll animation */
+    .text-roll {
+      display: inline-flex;
+      overflow: hidden;
+    }
+    .text-roll .char {
+      display: inline-block;
+      transform-style: preserve-3d;
+      white-space: pre;
+    }
+    @keyframes text-roll {
+      0% { transform: rotateX(0deg); }
+      100% { transform: rotateX(360deg); }
+    }
+    .team-header:hover .text-roll .char {
+      animation-name: text-roll;
+      animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      animation-iteration-count: infinite;
+    }
+
+    /* Bounce-up animation */
+    .text-bounce {
+      display: inline-flex;
+      position: relative;
+      overflow: visible;
+    }
+    .text-bounce .char {
+      display: inline-block;
+      white-space: pre;
+    }
+    @keyframes text-bounce-up {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .team-header:hover .text-bounce .char {
+      animation: text-bounce-up 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+    }
+    .text-bounce::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      height: 2px;
+      width: 0;
+      background: linear-gradient(90deg, #3b82f6, #a855f7, #ec4899);
+      border-radius: 2px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+    }
+    .team-header:hover .text-bounce::after {
+      width: 100%;
+    }
+
+    /* Pulse animation */
+    .text-pulse {
+      display: inline-block;
+    }
+    .team-header:hover .text-pulse {
+      animation: text-pulse 1s ease-in-out infinite;
+    }
+    @keyframes text-pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.08); opacity: 0.85; }
+    }
+
+    /* Draw animation */
+    .text-draw-svg {
+      overflow: visible;
+      height: 1.3em;
+      width: 100%;
+    }
+    .text-draw-svg text {
+      fill: white;
+      stroke: white;
+      stroke-width: 1;
+      stroke-dasharray: 300;
+      stroke-dashoffset: 0;
+      font-weight: 600;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+    }
+    .team-header:hover .text-draw-svg text {
+      animation: draw-text 2.5s ease infinite;
+    }
+    @keyframes draw-text {
+      0% { stroke-dashoffset: 300; fill: transparent; }
+      50% { stroke-dashoffset: 0; fill: transparent; }
+      70%, 100% { stroke-dashoffset: 0; fill: white; }
+    }
+
+    /* Glitch animation */
+    .text-glitch {
+      display: inline-block;
+      position: relative;
+    }
+    .text-glitch::before,
+    .text-glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .text-glitch::before {
+      color: #ff0000;
+      mix-blend-mode: screen;
+    }
+    .text-glitch::after {
+      color: #00ffff;
+      mix-blend-mode: screen;
+    }
+    .team-header:hover .text-glitch::before {
+      opacity: 0.8;
+      animation: glitch-red 0.3s infinite alternate;
+    }
+    .team-header:hover .text-glitch::after {
+      opacity: 0.8;
+      animation: glitch-cyan 0.25s infinite alternate;
+    }
+    .team-header:hover .text-glitch {
+      animation: glitch-main 0.4s infinite alternate;
+    }
+    @keyframes glitch-red {
+      0% { transform: translate(-2px, 1px) skewX(0deg); }
+      25% { transform: translate(2px, -1px) skewX(-1deg); }
+      50% { transform: translate(-1px, 2px) skewX(1deg); }
+      75% { transform: translate(1px, -2px) skewX(0deg); }
+      100% { transform: translate(-2px, -1px) skewX(-1deg); }
+    }
+    @keyframes glitch-cyan {
+      0% { transform: translate(2px, -1px) skewX(1deg); }
+      25% { transform: translate(-1px, 2px) skewX(0deg); }
+      50% { transform: translate(1px, -1px) skewX(-1deg); }
+      75% { transform: translate(-2px, 1px) skewX(1deg); }
+      100% { transform: translate(2px, 2px) skewX(0deg); }
+    }
+    @keyframes glitch-main {
+      0%, 80% { transform: translate(0); }
+      85% { transform: translate(-1px, 1px); }
+      90% { transform: translate(1px, -1px); }
+      95% { transform: translate(-1px, -1px); }
+      100% { transform: translate(0); }
+    }
+
+    /* Tooltip */
+    .team-header .tooltip {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: #f1f5f9;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      width: 300px;
+      text-align: left;
+      font-style: normal;
+      font-size: 0.8rem;
+      text-transform: none;
+      letter-spacing: normal;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      z-index: 100;
+      line-height: 1.5;
+    }
+    .team-header .tooltip::after {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-bottom-color: #1e293b;
+    }
+    .team-header .tooltip .tooltip-title {
+      font-weight: 600;
       font-size: 0.85rem;
+      margin-bottom: 0.25rem;
+      color: white;
+    }
+    .team-header .tooltip .tooltip-body {
+      color: #cbd5e1;
+      margin-bottom: 0.5rem;
+    }
+    .team-header .tooltip ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: #94a3b8;
+    }
+    .team-header .tooltip ul li {
+      margin-bottom: 0.15rem;
+    }
+    .team-header .tooltip ul ul {
+      margin-top: 0.1rem;
+      padding-left: 1rem;
       color: #64748b;
-      text-align: center;
-      padding: 0.5rem 0.5rem 0;
+      font-size: 0.75rem;
+    }
+    .team-header .tooltip .tooltip-footer {
+      margin-top: 0.5rem;
+      color: #94a3b8;
       font-style: italic;
+      font-size: 0.75rem;
+    }
+    .team-header .tooltip .tooltip-hard-mode {
+      margin-top: 0.5rem;
+      padding: 0.4rem 0.6rem;
+      background: rgba(239, 68, 68, 0.15);
+      border-left: 3px solid #ef4444;
+      border-radius: 0 4px 4px 0;
+      color: #fca5a5;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .team-header .tooltip .tooltip-section-title {
+      margin-top: 0.5rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      font-size: 0.8rem;
     }
 
     /* Input box */
@@ -368,20 +598,57 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2dW9ob3RoaXBrbGd3emN2bXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5MjAyNzEsImV4cCI6MjA4NjQ5NjI3MX0.ZWJPGd3Yt-Opv3Oaut3xvUZNhGrQ3P8FrQuhN-wCb6I';
 
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const teams = ['Venusaur', 'Charizard', 'Blastoise', 'Snorlax', 'Zapdos'];
-    const teamGifs = {
-      'Venusaur': 'https://img.pokemondb.net/sprites/black-white/anim/normal/venusaur.gif',
-      'Charizard': 'https://img.pokemondb.net/sprites/black-white/anim/normal/charizard.gif',
-      'Blastoise': 'https://img.pokemondb.net/sprites/black-white/anim/normal/blastoise.gif',
-      'Snorlax': 'https://img.pokemondb.net/sprites/black-white/anim/normal/snorlax.gif',
-      'Zapdos': 'https://img.pokemondb.net/sprites/black-white/anim/normal/zapdos.gif'
+    const teams = ['Better Roadmaps', 'Feature Ranking', 'Dashboards!', 'Games', 'Dealers Choice'];
+    const teamTooltips = {
+      'Better Roadmaps': {
+        title: 'Better Roadmaps',
+        body: "Let's face it, our roadmaps are boring, hard to follow, and non interactive. Lets spice it up!",
+        bullets: ['Interactive Gantt?', 'Colors?', 'Auto link w/ Jira?', 'etc..']
+      },
+      'Feature Ranking': {
+        title: 'Feature Ranking',
+        body: "The Feature Request board Collectors has is not intuitive, and does not give a voice to the non-leads in operations. Often times, pain points go undetected because people have no means to speak up.\n\nCreate an internal feature request dashboard where all users can submit requests. Then other users could upvote them to get them prioritized.",
+        bullets: ['Department selector?', 'Auto generate jira ticket on PM click?', 'Seek and consolidate dupes?']
+      },
+      'Dashboards!': {
+        title: 'Dashboards!',
+        body: "So many dashboard ideas... so little time.\n\nOne idea, Spec Confidence. Collect the data on spec accuracy confidence to outline any themes in how well our models are performing.",
+        bullets: [
+          'AIML vs Imaging',
+          { text: 'Historical accuracy', sub: ['Better results on specific types?'] },
+          { text: 'Risk?', sub: ['Maybe pair with RTV/Card Ladder/Pricing model to assess'] }
+        ],
+        footer: "Or if you have other ideas, go for it! Data is powerful, lets share!"
+      },
+      'Games': {
+        title: 'Games',
+        body: "Who doesn't love playing games? We're a company that revolves around the gaming culture, so how can we implement something fun for users to play?\n\nIdea: Create a game that users can play at the beginning of their day. Similar to LinkedIn games?",
+        bullets: [
+          'Leaderboard w/ points or time',
+          'Rotating games?',
+          { text: 'Daily or weekly rewards for top performers', sub: ['Pixelated cards'] }
+        ],
+        hardMode: "Make it collectors themed. Pokemon, Sports, Coins, etc.",
+        footer2Title: "A few game examples:",
+        footer2Bullets: ['Flappy Bird', 'Card Matching', 'Space Invaders']
+      },
+      'Dealers Choice': {
+        title: 'Dealers Choice',
+        body: "Bruh, you dont like my ideas? That's cool. Do your own thing."
+      }
     };
-    const teamTaglines = {
-      'Venusaur': 'Insert idea here',
-      'Charizard': 'Insert idea here',
-      'Blastoise': 'Insert idea here',
-      'Snorlax': 'Insert idea here',
-      'Zapdos': 'Insert idea here'
+    const teamAnimations = {
+      'Better Roadmaps': 'text-roll',
+      'Feature Ranking': 'text-bounce',
+      'Dashboards!': 'text-glitch',
+      'Games': 'text-draw',
+      'Dealers Choice': 'text-pulse'
+    };
+    const teamColors = {
+      'Feature Ranking': 'color-green',
+      'Dashboards!': 'color-pink',
+      'Games': 'color-orange',
+      'Dealers Choice': 'color-rainbow'
     };
     const teamsGrid = document.getElementById('teams-grid');
 
@@ -524,11 +791,33 @@
     function initUI() {
       teamsGrid.innerHTML = teams.map(team => `
         <div class="team-column" data-team="${team}">
-          <div class="team-header">
-            <span>${team}</span>
-            <img src="${teamGifs[team]}" alt="" class="team-pokemon">
+          <div class="team-header ${teamColors[team] || ''}">
+            ${(teamAnimations[team] || 'text-roll') === 'text-glitch'
+              ? `<span class="text-glitch" data-text="${team}">${team}</span>`
+              : (teamAnimations[team] === 'text-pulse'
+              ? `<span class="text-pulse">${team}</span>`
+              : (teamAnimations[team] === 'text-draw'
+              ? `<svg class="text-draw-svg"><text x="50%" y="1em" text-anchor="middle">${team.toUpperCase()}</text></svg>`
+              : `<span class="${teamAnimations[team] || 'text-roll'}">${team.split('').map((ch, i) => {
+                const anim = teamAnimations[team] || 'text-roll';
+                const style = anim === 'text-roll'
+                  ? `animation-duration:${(0.8 + Math.random() * 0.8).toFixed(2)}s; animation-delay:${(Math.random() * 0.5).toFixed(2)}s`
+                  : `animation-delay:${(i * 0.06).toFixed(2)}s`;
+                return `<span class="char" style="${style}">${ch === ' ' ? '&nbsp;' : ch}</span>`;
+              }).join('')}</span>`))}
+            ${teamTooltips[team] ? `<div class="tooltip">
+              <div class="tooltip-title">${teamTooltips[team].title}</div>
+              <div class="tooltip-body">${teamTooltips[team].body.replace(/\n/g, '<br>')}</div>
+              ${teamTooltips[team].bullets ? `<ul>${teamTooltips[team].bullets.map(b =>
+                typeof b === 'string'
+                  ? `<li>${b}</li>`
+                  : `<li>${b.text}<ul>${b.sub.map(s => `<li>${s}</li>`).join('')}</ul></li>`
+              ).join('')}</ul>` : ''}
+              ${teamTooltips[team].hardMode ? `<div class="tooltip-hard-mode">Hard mode: ${teamTooltips[team].hardMode}</div>` : ''}
+              ${teamTooltips[team].footer2Title ? `<div class="tooltip-section-title">${teamTooltips[team].footer2Title}</div><ul>${teamTooltips[team].footer2Bullets.map(b => `<li>${b}</li>`).join('')}</ul>` : ''}
+              ${teamTooltips[team].footer ? `<div class="tooltip-footer">${teamTooltips[team].footer}</div>` : ''}
+            </div>` : ''}
           </div>
-          <div class="team-tagline">${teamTaglines[team]}</div>
           <input type="text" class="signup-input" placeholder="Enter your name..." onkeypress="handleKeypress(event, '${team}')">
           <div class="name-list"></div>
         </div>
