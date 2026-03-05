@@ -598,7 +598,7 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2dW9ob3RoaXBrbGd3emN2bXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5MjAyNzEsImV4cCI6MjA4NjQ5NjI3MX0.ZWJPGd3Yt-Opv3Oaut3xvUZNhGrQ3P8FrQuhN-wCb6I';
 
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const teams = ['Better Roadmaps', 'Feature Ranking', 'Dashboards!', 'Games', 'Dealers Choice'];
+    const teams = ['Better Roadmaps', 'Feature Ranking', 'Dashboards!', 'Dealers Choice'];
     const teamTooltips = {
       'Better Roadmaps': {
         title: 'Better Roadmaps',
@@ -620,18 +620,6 @@
         ],
         footer: "Or if you have other ideas, go for it! Data is powerful, lets share!"
       },
-      'Games': {
-        title: 'Games',
-        body: "Who doesn't love playing games? We're a company that revolves around the gaming culture, so how can we implement something fun for users to play?\n\nIdea: Create a game that users can play at the beginning of their day. Similar to LinkedIn games?",
-        bullets: [
-          'Leaderboard w/ points or time',
-          'Rotating games?',
-          { text: 'Daily or weekly rewards for top performers', sub: ['Pixelated cards'] }
-        ],
-        hardMode: "Make it collectors themed. Pokemon, Sports, Coins, etc.",
-        footer2Title: "A few game examples:",
-        footer2Bullets: ['Flappy Bird', 'Card Matching', 'Space Invaders']
-      },
       'Dealers Choice': {
         title: 'Dealers Choice',
         body: "Bruh, you dont like my ideas? That's cool. Do your own thing.",
@@ -646,13 +634,11 @@
       'Better Roadmaps': 'text-roll',
       'Feature Ranking': 'text-bounce',
       'Dashboards!': 'text-glitch',
-      'Games': 'text-draw',
       'Dealers Choice': 'text-pulse'
     };
     const teamColors = {
       'Feature Ranking': 'color-green',
       'Dashboards!': 'color-pink',
-      'Games': 'color-orange',
       'Dealers Choice': 'color-rainbow'
     };
     const teamsGrid = document.getElementById('teams-grid');
