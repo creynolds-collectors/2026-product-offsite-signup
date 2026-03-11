@@ -19,9 +19,40 @@
       margin: 0 75px;
       background: rgba(255, 255, 255, 0.95);
       border-radius: 16px;
-      padding: 2.5rem;
+      padding: 20px;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
     }
+    .ideas-container {
+      margin-top: 1.5rem;
+    }
+    .ideas-title {
+      font-weight: 700;
+      color: #1a1a2e;
+      font-size: 1.4rem;
+      margin-bottom: 0.25rem;
+    }
+    .ideas-subtitle {
+      color: #64748b;
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+    }
+    .ideas-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .ideas-list li {
+      padding: 0.75rem 1rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #10b981;
+      border-radius: 8px;
+      color: #334155;
+      font-size: 0.95rem;
+    }
+
     .title-row {
       display: flex;
       justify-content: center;
@@ -545,6 +576,32 @@
     </div>
     <p class="subtitle">Team Signups</p>
     <div class="teams-grid" id="teams-grid"></div>
+  </div>
+
+  <div class="container ideas-container">
+    <h2 class="ideas-title">Additional Ideas</h2>
+    <p class="ideas-subtitle">Looking for inspiration? Pick one of these for your Dealers Choice project.</p>
+    <ul class="ideas-list" id="ideas-list">
+      <li>
+        <strong>"What's Happening to My Card" Explainer</strong>
+        <br>An interactive visual timeline that explains each step of the grading process to customers. Animated progress through: Receiving → ID/Entry → Grading → Encapsulation → QC → Shipping. Each step has a plain-language explanation.
+        <br><br><em>Why it matters:</em> Reduces "where's my order" support tickets by educating customers
+        <br><em>Great for:</em> First-time submitters
+      </li>
+      <li>
+        <strong>Card Show / Event Finder</strong>
+        <br>A map-based or list-based tool showing upcoming card shows, PSA submission events, and meet-and-greets. Filter by region, date, submission availability.
+        <br><br>Simple data display but customers constantly ask about this
+      </li>
+      <li>
+        <strong>AI Submission Form Reader</strong>
+        <br>Upload a photo of a submission form with handwritten notes → display the extracted fields in a clean editable table. Prototype the UI and flow (mock the AI extraction part, or wire up a vision API if ambitious).
+      </li>
+      <li>
+        <strong>Grading Floor "Spotify Wrapped"</strong>
+        <br>An end-of-year style recap for a grader or department: total cards graded, rarest card seen, busiest day, most common grade given, fun superlatives. Pure fun, but great for morale.
+      </li>
+    </ul>
   </div>
 
   <!-- Edit Modal -->
